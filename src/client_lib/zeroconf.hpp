@@ -16,19 +16,19 @@
 
 namespace Zeroconf
 {    
-    typedef Detail::Log::LogLevel LogLevel;
-    typedef Detail::Log::LogCallback LogCallback;
-    typedef Detail::mdns_responce mdns_responce;
+	typedef Detail::Log::LogLevel LogLevel;
+	typedef Detail::Log::LogCallback LogCallback;
+	typedef Detail::mdns_responce mdns_responce;
 
-    inline bool Resolve(const std::string& serviceName, time_t scanTime, std::vector<mdns_responce>* result)
-    {
-        return Detail::Resolve(serviceName, scanTime, result);
-    }
+	inline bool Resolve(const std::string& serviceName, time_t scanTime, std::vector<mdns_responce>* result)
+	{
+		return Detail::Resolve(serviceName, scanTime, result);
+	}
 
-    inline void SetLogCallback(LogCallback callback)
-    {
-        Detail::Log::SetLogCallback(callback);
-    }
+	inline void SetLogCallback(LogCallback callback)
+	{
+		Detail::Log::SetLogCallback(callback);
+	}
 }
 
 #endif // ZEROCONF_HPP

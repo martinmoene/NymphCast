@@ -196,14 +196,14 @@ void NymphCastClient::ReceiveFromAppCallback(uint32_t session, NymphMessage* msg
 
 
 void PrintLog(Zeroconf::LogLevel level, const std::string& message) {
-    switch (level) {
-        case Zeroconf::LogLevel::Error:
-            std::cout << "E: " << message << std::endl;
-            break;
-        case Zeroconf::LogLevel::Warning:
-            std::cout << "W: " << message << std::endl;
-            break;
-    }
+	switch (level) {
+		case Zeroconf::LogLevel::Error:
+			std::cout << "E: " << message << std::endl;
+			break;
+		case Zeroconf::LogLevel::Warning:
+			std::cout << "W: " << message << std::endl;
+			break;
+	}
 }
 
 
@@ -324,7 +324,7 @@ std::vector<NymphCastRemote> NymphCastClient::findServers() {
 		NymphCastRemote rm;
 		
 		char buffer[INET6_ADDRSTRLEN + 1] = {0};
-        inet_ntop(items[i].peer.ss_family, get_in_addr(&(items[i].peer)), buffer, INET6_ADDRSTRLEN);
+		inet_ntop(items[i].peer.ss_family, get_in_addr(&(items[i].peer)), buffer, INET6_ADDRSTRLEN);
 		
 		std::cout << "Peer: " << buffer << std::endl;
 		rm.ipv4 = std::string(buffer);
@@ -339,7 +339,7 @@ std::vector<NymphCastRemote> NymphCastClient::findServers() {
 		NymphCastRemote rm;
 		
 		char buffer[INET6_ADDRSTRLEN + 1] = {0};
-        inet_ntop(items1[i].peer.ss_family, get_in_addr(&(items1[i].peer)), buffer, INET6_ADDRSTRLEN);
+		inet_ntop(items1[i].peer.ss_family, get_in_addr(&(items1[i].peer)), buffer, INET6_ADDRSTRLEN);
 		
 		std::cout << "Peer: " << buffer << std::endl;
 		rm.ipv4 = std::string(buffer);

@@ -120,9 +120,9 @@ int media_open_cb(void *opaque, void **datap, uint64_t *sizep) {
 	
 	DataBuffer* db = static_cast<DataBuffer*>(opaque);
 	
-    *sizep = db->data.size();
-    *datap = opaque;
-    return 0;
+	*sizep = db->data.size();
+	*datap = opaque;
+	return 0;
 }
 
 
@@ -279,7 +279,7 @@ int main(int argc, char *argv[]) {
 	//std::copy(video_buffer.data.begin(), video_buffer.data.end(), std::ostream_iterator<uint8_t>(OUT));
 	
 	m = libvlc_media_new_callbacks(
-                                    libvlc,
+									libvlc,
 									media_open_cb,
 									media_read_cb,
 									media_seek_cb,

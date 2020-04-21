@@ -48,7 +48,7 @@ void ScreenSaver::start(uint32_t changeSecs) {
 	
 	// Read in image names.
 	for (const fs::directory_entry& entry : fs::directory_iterator(dataPath)) {
-        images.push_back(entry.path().string());
+		images.push_back(entry.path().string());
 	}
 	
 	fprintf(stdout, "Found %d wallpapers.", images.size());

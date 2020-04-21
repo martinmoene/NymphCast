@@ -63,10 +63,10 @@ typedef enum mdns_entry_type   mdns_entry_type_t;
 typedef enum mdns_class        mdns_class_t;
 
 typedef int (* mdns_record_callback_fn)(const struct sockaddr* from,
-                                        mdns_entry_type_t entry, uint16_t type,
-                                        uint16_t rclass, uint32_t ttl,
-                                        const void* data, size_t size, size_t offset, size_t length,
-                                        void* user_data);
+										mdns_entry_type_t entry, uint16_t type,
+										uint16_t rclass, uint32_t ttl,
+										const void* data, size_t size, size_t offset, size_t length,
+										void* user_data);
 
 typedef struct mdns_string_t       mdns_string_t;
 typedef struct mdns_string_pair_t  mdns_string_pair_t;
@@ -116,50 +116,50 @@ mdns_discovery_send(int sock);
 
 static size_t
 mdns_discovery_recv(int sock, void* buffer, size_t capacity,
-                    mdns_record_callback_fn callback, void* user_data);
+					mdns_record_callback_fn callback, void* user_data);
 
 static int
 mdns_query_send(int sock, mdns_record_type_t type, const char* name, size_t length,
-                void* buffer, size_t capacity);
+				void* buffer, size_t capacity);
 
 static size_t
 mdns_query_recv(int sock, void* buffer, size_t capacity,
-                mdns_record_callback_fn callback, void* user_data,
-                uint8_t one_shot);
+				mdns_record_callback_fn callback, void* user_data,
+				uint8_t one_shot);
 
 static mdns_string_t
 mdns_string_extract(const void* buffer, size_t size, size_t* offset,
-                    char* str, size_t capacity);
+					char* str, size_t capacity);
 
 static int
 mdns_string_skip(const void* buffer, size_t size, size_t* offset);
 
 static int
 mdns_string_equal(const void* buffer_lhs, size_t size_lhs, size_t* ofs_lhs,
-                  const void* buffer_rhs, size_t size_rhs, size_t* ofs_rhs);
+				  const void* buffer_rhs, size_t size_rhs, size_t* ofs_rhs);
 
 static void*
 mdns_string_make(void* data, size_t capacity, const char* name, size_t length);
 
 static mdns_string_t
 mdns_record_parse_ptr(const void* buffer, size_t size, size_t offset, size_t length,
-                      char* strbuffer, size_t capacity);
+					  char* strbuffer, size_t capacity);
 
 static mdns_record_srv_t
 mdns_record_parse_srv(const void* buffer, size_t size, size_t offset, size_t length,
-                      char* strbuffer, size_t capacity);
+					  char* strbuffer, size_t capacity);
 
 static struct sockaddr_in*
 mdns_record_parse_a(const void* buffer, size_t size, size_t offset, size_t length,
-                    struct sockaddr_in* addr);
+					struct sockaddr_in* addr);
 
 static struct sockaddr_in6*
 mdns_record_parse_aaaa(const void* buffer, size_t size, size_t offset, size_t length,
-                       struct sockaddr_in6* addr);
+					   struct sockaddr_in6* addr);
 
 static size_t
 mdns_record_parse_txt(const void* buffer, size_t size, size_t offset, size_t length,
-                      mdns_record_txt_t* records, size_t capacity);
+					  mdns_record_txt_t* records, size_t capacity);
 
 // Implementations
 
@@ -327,7 +327,7 @@ mdns_string_skip(const void* buffer, size_t size, size_t* offset) {
 
 static int
 mdns_string_equal(const void* buffer_lhs, size_t size_lhs, size_t* ofs_lhs,
-                  const void* buffer_rhs, size_t size_rhs, size_t* ofs_rhs) {
+				  const void* buffer_rhs, size_t size_rhs, size_t* ofs_rhs) {
 	size_t lhs_cur = *ofs_lhs;
 	size_t rhs_cur = *ofs_rhs;
 	size_t lhs_end = MDNS_INVALID_POS;
@@ -342,7 +342,7 @@ mdns_string_equal(const void* buffer_lhs, size_t size_lhs, size_t* ofs_lhs,
 		if (lhs_substr.length != rhs_substr.length)
 			return 0;
 		if (strncasecmp((const char*)buffer_rhs + rhs_substr.offset,
-		                (const char*)buffer_lhs + lhs_substr.offset, rhs_substr.length))
+						(const char*)buffer_lhs + lhs_substr.offset, rhs_substr.length))
 			return 0;
 		if (lhs_substr.ref && (lhs_end == MDNS_INVALID_POS))
 			lhs_end = lhs_cur + 2;
@@ -366,7 +366,7 @@ mdns_string_equal(const void* buffer_lhs, size_t size_lhs, size_t* ofs_lhs,
 
 static mdns_string_t
 mdns_string_extract(const void* buffer, size_t size, size_t* offset,
-                    char* str, size_t capacity) {
+					char* str, size_t capacity) {
 	size_t cur = *offset;
 	size_t end = MDNS_INVALID_POS;
 	mdns_string_pair_t substr;
@@ -451,8 +451,8 @@ mdns_string_make(void* data, size_t capacity, const char* name, size_t length) {
 
 static size_t
 mdns_records_parse(const struct sockaddr* from, const void* buffer, size_t size, size_t* offset,
-                   mdns_entry_type_t type, size_t records, mdns_record_callback_fn callback,
-                   void* user_data) {
+				   mdns_entry_type_t type, size_t records, mdns_record_callback_fn callback,
+				   void* user_data) {
 	size_t parsed = 0;
 	int do_callback = 1;
 	for (size_t i = 0; i < records; ++i) {
@@ -469,7 +469,7 @@ mdns_records_parse(const struct sockaddr* from, const void* buffer, size_t size,
 		if (do_callback) {
 			++parsed;
 			if (callback(from, type, rtype, rclass, ttl, buffer, size, *offset, length,
-			             user_data))
+						 user_data))
 				do_callback = 0;
 		}
 
@@ -536,14 +536,14 @@ mdns_discovery_send(int sock) {
 	}
 
 	if (sendto(sock, mdns_services_query, sizeof(mdns_services_query), 0,
-	           saddr, saddrlen) < 0)
+			   saddr, saddrlen) < 0)
 		return -1;
 	return 0;
 }
 
 static size_t
 mdns_discovery_recv(int sock, void* buffer, size_t capacity,
-                    mdns_record_callback_fn callback, void* user_data) {
+					mdns_record_callback_fn callback, void* user_data) {
 	struct sockaddr_in6 addr;
 	struct sockaddr* saddr = (struct sockaddr*)&addr;
 	memset(&addr, 0, sizeof(addr));
@@ -553,7 +553,7 @@ mdns_discovery_recv(int sock, void* buffer, size_t capacity,
 #endif
 	socklen_t addrlen = sizeof(addr);
 	int ret = recvfrom(sock, buffer, capacity, 0,
-	                   saddr, &addrlen);
+					   saddr, &addrlen);
 	if (ret <= 0)
 		return 0;
 
@@ -580,7 +580,7 @@ mdns_discovery_recv(int sock, void* buffer, size_t capacity,
 		size_t verify_ofs = 12;
 		//Verify it's our question, _services._dns-sd._udp.local.
 		if (!mdns_string_equal(buffer, data_size, &ofs,
-		                       mdns_services_query, sizeof(mdns_services_query), &verify_ofs))
+							   mdns_services_query, sizeof(mdns_services_query), &verify_ofs))
 			return 0;
 		data = (uint16_t*)((char*)buffer + ofs);
 
@@ -598,7 +598,7 @@ mdns_discovery_recv(int sock, void* buffer, size_t capacity,
 		size_t verify_ofs = 12;
 		//Verify it's an answer to our question, _services._dns-sd._udp.local.
 		int is_answer = mdns_string_equal(buffer, data_size, &ofs,
-		                                  mdns_services_query, sizeof(mdns_services_query), &verify_ofs);
+										  mdns_services_query, sizeof(mdns_services_query), &verify_ofs);
 		data = (uint16_t*)((char*)buffer + ofs);
 
 		uint16_t type = ntohs(*data++);
@@ -609,8 +609,8 @@ mdns_discovery_recv(int sock, void* buffer, size_t capacity,
 		if (is_answer && do_callback) {
 			++records;
 			if (callback(saddr, MDNS_ENTRYTYPE_ANSWER, type, rclass, ttl, buffer,
-			             data_size, (size_t)((char*)data - (char*)buffer), length,
-			             user_data))
+						 data_size, (size_t)((char*)data - (char*)buffer), length,
+						 user_data))
 				do_callback = 0;
 		}
 		data = (void*)((char*)data + length);
@@ -618,11 +618,11 @@ mdns_discovery_recv(int sock, void* buffer, size_t capacity,
 
 	size_t offset = (size_t)((char*)data - (char*)buffer);
 	records += mdns_records_parse(saddr, buffer, data_size, &offset,
-	                              MDNS_ENTRYTYPE_AUTHORITY, authority_rrs, 
-	                              callback, user_data);
+								  MDNS_ENTRYTYPE_AUTHORITY, authority_rrs, 
+								  callback, user_data);
 	records += mdns_records_parse(saddr, buffer, data_size, &offset,
-	                              MDNS_ENTRYTYPE_ADDITIONAL, additional_rrs, 
-	                              callback, user_data);
+								  MDNS_ENTRYTYPE_ADDITIONAL, additional_rrs, 
+								  callback, user_data);
 
 	return records;
 }
@@ -631,7 +631,7 @@ static uint16_t mdns_transaction_id = 0;
 
 static int
 mdns_query_send(int sock, mdns_record_type_t type, const char* name, size_t length,
-                void* buffer, size_t capacity) {
+				void* buffer, size_t capacity) {
 	if (capacity < (17 + length))
 		return -1;
 
@@ -688,15 +688,15 @@ mdns_query_send(int sock, mdns_record_type_t type, const char* name, size_t leng
 	}
 
 	if (sendto(sock, buffer, (char*)data - (char*)buffer, 0,
-	           saddr, saddrlen) < 0)
+			   saddr, saddrlen) < 0)
 		return -1;
 	return 0;
 }
 
 static size_t
 mdns_query_recv(int sock, void* buffer, size_t capacity,
-                mdns_record_callback_fn callback, void* user_data,
-                uint8_t one_shot) {
+				mdns_record_callback_fn callback, void* user_data,
+				uint8_t one_shot) {
 	struct sockaddr_in6 addr;
 	struct sockaddr* saddr = (struct sockaddr*)&addr;
 	memset(&addr, 0, sizeof(addr));
@@ -706,7 +706,7 @@ mdns_query_recv(int sock, void* buffer, size_t capacity,
 #endif
 	socklen_t addrlen = sizeof(addr);
 	int ret = recvfrom(sock, buffer, capacity, 0,
-	                   saddr, &addrlen);
+					   saddr, &addrlen);
 	if (ret <= 0)
 		return 0;
 
@@ -740,20 +740,20 @@ mdns_query_recv(int sock, void* buffer, size_t capacity,
 	size_t records = 0;
 	size_t offset = (size_t)((char*)data - (char*)buffer);
 	records += mdns_records_parse(saddr, buffer, data_size, &offset,
-	                              MDNS_ENTRYTYPE_ANSWER, answer_rrs, 
-	                              callback, user_data);
+								  MDNS_ENTRYTYPE_ANSWER, answer_rrs, 
+								  callback, user_data);
 	records += mdns_records_parse(saddr, buffer, data_size, &offset,
-	                              MDNS_ENTRYTYPE_AUTHORITY, authority_rrs, 
-	                              callback, user_data);
+								  MDNS_ENTRYTYPE_AUTHORITY, authority_rrs, 
+								  callback, user_data);
 	records += mdns_records_parse(saddr, buffer, data_size, &offset,
-	                              MDNS_ENTRYTYPE_ADDITIONAL, additional_rrs, 
-	                              callback, user_data);
+								  MDNS_ENTRYTYPE_ADDITIONAL, additional_rrs, 
+								  callback, user_data);
 	return records;
 }
 
 static mdns_string_t
 mdns_record_parse_ptr(const void* buffer, size_t size, size_t offset, size_t length,
-                      char* strbuffer, size_t capacity) {
+					  char* strbuffer, size_t capacity) {
 	//PTR record is just a string
 	if ((size >= offset + length) && (length >= 2))
 		return mdns_string_extract(buffer, size, &offset, strbuffer, capacity);
@@ -763,7 +763,7 @@ mdns_record_parse_ptr(const void* buffer, size_t size, size_t offset, size_t len
 
 static mdns_record_srv_t
 mdns_record_parse_srv(const void* buffer, size_t size, size_t offset, size_t length,
-                      char* strbuffer, size_t capacity) {
+					  char* strbuffer, size_t capacity) {
 	mdns_record_srv_t srv;
 	memset(&srv, 0, sizeof(mdns_record_srv_t));
 	// Read the priority, weight, port number and the discovery name
@@ -785,7 +785,7 @@ mdns_record_parse_srv(const void* buffer, size_t size, size_t offset, size_t len
 
 static struct sockaddr_in*
 mdns_record_parse_a(const void* buffer, size_t size, size_t offset, size_t length,
-                    struct sockaddr_in* addr) {
+					struct sockaddr_in* addr) {
 	memset(addr, 0, sizeof(struct sockaddr_in));
 	addr->sin_family = AF_INET;
 #ifdef __APPLE__
@@ -798,7 +798,7 @@ mdns_record_parse_a(const void* buffer, size_t size, size_t offset, size_t lengt
 
 static struct sockaddr_in6*
 mdns_record_parse_aaaa(const void* buffer, size_t size, size_t offset, size_t length,
-                       struct sockaddr_in6* addr) {
+					   struct sockaddr_in6* addr) {
 	memset(addr, 0, sizeof(struct sockaddr_in6));
 	addr->sin6_family = AF_INET6;
 #ifdef __APPLE__
@@ -811,7 +811,7 @@ mdns_record_parse_aaaa(const void* buffer, size_t size, size_t offset, size_t le
 
 static size_t
 mdns_record_parse_txt(const void* buffer, size_t size, size_t offset, size_t length,
-                      mdns_record_txt_t* records, size_t capacity) {
+					  mdns_record_txt_t* records, size_t capacity) {
 	size_t parsed = 0;
 	const char* strdata;
 	size_t separator, sublength;
